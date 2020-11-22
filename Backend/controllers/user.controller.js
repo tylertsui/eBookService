@@ -180,6 +180,7 @@ exports.getAllUsers = (req, res) => {
 
 
 exports.addEbook = (req, res) => {
+    console.log("INSIDE THE FUNCTION")
     const entry = new eBook(
         {
             title: req.body.title,
