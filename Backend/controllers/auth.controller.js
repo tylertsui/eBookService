@@ -7,11 +7,11 @@ let jwt = require("jsonwebtoken");
 let bcrypt = require("bcryptjs");
 
 exports.signup = (req, res) => {
-    console.log(req.body['username'])
   const user = new User({
     username: req.body.username,
     email: req.body.email,
-    password: bcrypt.hashSync(req.body.password, 8)
+    password: bcrypt.hashSync(req.body.password, 8),
+    uploadedBooks: []
   });
 
   user.save((err, user) => {
