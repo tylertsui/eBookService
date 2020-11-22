@@ -211,6 +211,138 @@ exports.editOwnUser = (req, res) => {
     })
 }
 
+exports.editOwnBookInfo = (req, res) => {
+    User.findById(req.body.userID).exec((err, user) => {
+        let passwordIsValid = bcrypt.compareSync(
+            req.body.password,
+            user.password
+        );
+        if (!passwordIsValid) {
+            res.status(500).send({ message: "Password does not match with user" })
+            return
+        } else if (!user.uploadedBooks.includes(req.body.bookID)) {
+            res.status(500).send({ message: "You did not upload this eBook" })
+            return
+        } else {
+            if (req.body.newTitle) {
+                eBook.findByIdAndUpdate(
+                    { _id: req.body.bookID },
+                    { $set: { title: req.body.newTitle } },
+                    { useFindAndModify: false }
+                ).exec(err => {
+                    if (err) {
+                        res.status(500).send({ message: err });
+                        return;
+                    }
+                    console.log("Title editted successfully");
+                })
+            }
+            if (req.body.newAuthor) {
+                User.findByIdAndUpdate(
+                    { _id: req.body.bookID },
+                    { $set: { email: req.body.newAuthor } },
+                    { useFindAndModify: false }
+                ).exec(err => {
+                    if (err) {
+                        res.status(500).send({ message: err });
+                        return;
+                    }
+                    console.log("Author editted successfully");
+                })
+            }
+            if (req.body.newGenre) {
+                User.findByIdAndUpdate(
+                    { _id: req.body.bookID },
+                    { $set: { genre: req.body.newGenre } },
+                    { useFindAndModify: false }
+                ).exec(err => {
+                    if (err) {
+                        res.status(500).send({ message: err });
+                        return;
+                    }
+                    console.log("Genre editted successfully");
+                })
+            }
+            if (req.body.newYear) {
+                User.findByIdAndUpdate(
+                    { _id: req.body.bookID },
+                    { $set: { publicationYear: req.body.newYear } },
+                    { useFindAndModify: false }
+                ).exec(err => {
+                    if (err) {
+                        res.status(500).send({ message: err });
+                        return;
+                    }
+                    console.log("Publication year editted successfully");
+                })
+            }
+
+            if (req.body.newTitle || req.body.newAuthor || req.body.newGenre || req.body.newYear) {
+                res.status(200).send({ message: "eBook information editted successfully" });
+            }
+        }
+    })
+}
+
+exports.AdminEditBookInfo = (req, res) => {
+    if (req.body.newTitle) {
+        eBook.findByIdAndUpdate(
+            { _id: req.body.bookID },
+            { $set: { title: req.body.newTitle } },
+            { useFindAndModify: false }
+        ).exec(err => {
+            if (err) {
+                res.status(500).send({ message: err });
+                return;
+            }
+            console.log("Title editted successfully");
+        })
+    }
+    if (req.body.newAuthor) {
+        User.findByIdAndUpdate(
+            { _id: req.body.bookID },
+            { $set: { email: req.body.newAuthor } },
+            { useFindAndModify: false }
+        ).exec(err => {
+            if (err) {
+                res.status(500).send({ message: err });
+                return;
+            }
+            console.log("Author editted successfully");
+        })
+    }
+    if (req.body.newGenre) {
+        User.findByIdAndUpdate(
+            { _id: req.body.bookID },
+            { $set: { genre: req.body.newGenre } },
+            { useFindAndModify: false }
+        ).exec(err => {
+            if (err) {
+                res.status(500).send({ message: err });
+                return;
+            }
+            console.log("Genre editted successfully");
+        })
+    }
+    if (req.body.newYear) {
+        User.findByIdAndUpdate(
+            { _id: req.body.bookID },
+            { $set: { publicationYear: req.body.newYear } },
+            { useFindAndModify: false }
+        ).exec(err => {
+            if (err) {
+                res.status(500).send({ message: err });
+                return;
+            }
+            console.log("Publication year editted successfully");
+        })
+    }
+
+    if (req.body.newTitle || req.body.newAuthor || req.body.newGenre || req.body.newYear) {
+        res.status(200).send({ message: "eBook information editted successfully" });
+    }
+}
+
 exports.AdminEditUser = (req, res) => {
     if (req.body.newUsername) {
         User.findByIdAndUpdate(
