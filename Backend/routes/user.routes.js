@@ -10,13 +10,14 @@ module.exports = (app) => {
     next();
   });
 
-  app.get("/api/test/all", controller.allAccess);
-
-  app.get("/api/test/user", [authJwt.verifyToken], controller.userBoard);
+  app.get("/api/books", [authJwt.verifyToken], controller.getAllBooks);
+  app.get("/api/books/:author", [authJwt.verifyToken], controller.getBooksByAuthor);
 
   app.get(
-    "/api/test/admin",
+    "/api/admin",
     [authJwt.verifyToken, authJwt.isAdmin],
     controller.adminBoard
   );
+
+  app.post("/api/eBookAdd", [authJwt.verifyToken], controller.addEbook )
 };
