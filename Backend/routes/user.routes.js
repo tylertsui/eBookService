@@ -19,14 +19,19 @@ module.exports = (app) => {
 
     app.post("/api/eBookAdd", [authJwt.verifyToken], controller.addEbook)
 
+    app.put("/api/editUser", [authJwt.verifyToken], controller.editOwnUser);
+
     app.delete("/api/delete/ebook", [authJwt.verifyToken], controller.deleteAnEbook)
+    app.delete("/api/delete/account/:userID", [authJwt.verifyToken], controller.deleteOwnAccount)
 
     //User related
     app.get("/api/users", [authJwt.verifyToken], controller.getAllUsers);
-    app.post("/api/editUser", [authJwt.verifyToken], controller.editUser);
 
     //Admin API calls
+    app.put("/api/admin/editUser", [authJwt.verifyToken, authJwt.isAdmin], controller.AdminEditUser);
+
     app.delete("/api/admin/delete/account/:userID", [authJwt.verifyToken, authJwt.isAdmin], controller.adminDeleteAccount)
+
 
 
 
