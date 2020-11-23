@@ -109,8 +109,7 @@ const testing = () => {
 }
 
 const uploadEBookToDB = (body) => {
-    let token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVmYjliYjA3MGI1NGQ1Mzc1NDhkN2NjOCIsImlhdCI6MTYwNjAwNzU3MCwiZXhwIjoxNjA2MDkzOTcwfQ.DGgzoP2MuRfShog-wQZi4Zde11bhDyEu4ULYPoZRbRA'
-    console.log("DATA:\n" + JSON.stringify(body));
+    let token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVmYjliYjA3MGI1NGQ1Mzc1NDhkN2NjOCIsImlhdCI6MTYwNjA4NTExMCwiZXhwIjoxNjA2MTcxNTEwfQ.rGjR4Qh6I9UWe26w_dePMXGHr5tD7jF_kQAmolSTSLY'
     // const header = {
     //     'Content-Type': 'application/json',
     //     'x-access-token': token

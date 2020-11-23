@@ -396,13 +396,14 @@ exports.getAllUsers = (req, res) => {
             res.status(200).send({ ebooks: "Sorry, no matches found." });
             return;
         }
+        console.log(results);
         res.status(200).send({ users: results });
     })
 };
 
 
 exports.addEbook = (req, res) => {
-    console.log("INSIDE THE FUNCTION")
+    console.log(req);
     const entry = new eBook(
         {
             title: req.body.title,
