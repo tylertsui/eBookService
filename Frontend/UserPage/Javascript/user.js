@@ -1,22 +1,34 @@
+const getUser = () => {
+    let user = {
+        userID: sessionStorage.getItem("userID"),
+        username: sessionStorage.getItem("username"),
+        email: sessionStorage.getItem("email"),
+        token: sessionStorage.getItem("token")
+    }
+    return user;
+}
 
-let to_upload = () => {
+const toUpload = () => {
     window.location.replace("../../UploadPage/HTML/upload.html");
 }
 
-let to_user = () => {
+const toUser = () => {
     window.location.replace("../../AccountSetting/HTML/account.html");
 }
 
-let page_navigation = () => {
+const pageNavigation = () => {
     let upload = document.getElementById("eb_upload");
     let user = document.getElementById("user_info_settings");
-    upload.onclick = to_upload;
-    user.onclick = to_user;
+    upload.onclick = toUpload;
+    user.onclick = toUser;
     
 }
 
-let main = () => {
-    page_navigation();
+const user = getUser();
+
+const main = () => {
+    console.log(user);
+    pageNavigation();
 }
 
 main();
