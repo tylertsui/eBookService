@@ -1,5 +1,3 @@
-const user = getUser();
-
 const getUser = () => {
     let user = {
         userID: sessionStorage.getItem("userID"),
@@ -26,8 +24,11 @@ const pageNavigation = () => {
     
 }
 
+const user = getUser();
+
 const main = () => {
-        pageNavigation();
+    console.log(user);
+    pageNavigation();
 }
 
 main();
