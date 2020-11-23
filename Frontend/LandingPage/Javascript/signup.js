@@ -18,5 +18,8 @@ const signUp = () => {
     axios.post(URL, user).then(res => {
         console.log(res.data.message);
         redirectToLanding(res.data.message);
-    }).catch(e => console.log(e));
+    }).catch(e => {
+        console.log(e.response.data.message)
+        alert(e.response.data.message);
+    });
 }
