@@ -1,4 +1,5 @@
 const express = require("express");
+const router = require('./routes/router.js');
 const cors = require("cors");
 
 const app = express();
@@ -15,7 +16,7 @@ app.use(express.json());
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
 
-const router = require('./routes/router.js');
+
 app.use('/api', router);
 
 // simple route
