@@ -1,110 +1,121 @@
-const config = require("../config/auth.config.js");
-const db = require("../models");
-const User = db.user;
-const Role = db.role;
+const db = require('../config/db.config');
+const uuid = require('uuid');
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
 
-let jwt = require("jsonwebtoken");
-let bcrypt = require("bcryptjs");
-
-exports.signup = (req, res) => {
-  const user = new User({
-    username: req.body.username,
-    email: req.body.email,
-    password: bcrypt.hashSync(req.body.password, 8),
-    uploadedBooks: []
-  });
-
-  user.save((err, user) => {
-    if (err) {
-      res.status(500).send({ message: err });
-      return;
-    }
-
-    if (req.body.roles) {
-      Role.find(
-        {
-          name: { $in: req.body.roles }
-        },
-        (err, roles) => {
-          if (err) {
-            res.status(500).send({ message: err });
-            return;
-          }
-
-          user.roles = roles.map(role => role._id);
-          user.save(err => {
-            if (err) {
-              res.status(500).send({ message: err });
-              return;
+exports.signup = (req, res, next) => {
+    db.query(
+        `SELECT * FROM users WHERE LOWER(username) = LOWER(${db.escape(
+            req.body.username
+        )})`,
+        (err, result) => {
+            if (result.length) {
+                return res.status(409).send({
+                    msg: 'This username is already in use!'
+                });
+            } else {
+                db.query(
+                    `SELECT * FROM users WHERE LOWER(email) = LOWER(${db.escape(
+                        req.body.email
+                    )})`, (err, result) => {
+                        if (result.length) {
+                            return res.status(409).send({
+                                msg: 'This email is already in use!'
+                            });
+                        } else {
+                            // username is available
+                            bcrypt.hash(req.body.password, 10, (err, hash) => {
+                                if (err) {
+                                    return res.status(500).send({
+                                        msg: err
+                                    });
+                                } else {
+                                    // has hashed pw => add to database
+                                    db.query(
+                                        `INSERT INTO users (id, username, password, email, registered) VALUES 
+                                        ('${uuid.v4()}', 
+                                        ${db.escape(req.body.username)}, 
+                                        ${db.escape(hash)},
+                                        ${db.escape(req.body.email)},
+                                        now())`,
+                                        (err, result) => {
+                                            console.log(result)
+                                            if (err) {
+                                                console.log(err);
+                                                return res.status(400).send({
+                                                    msg: err
+                                                });
+                                            }
+                                            return res.status(201).send({
+                                                msg: 'Registered!'
+                                            });
+                                        }
+                                    );
+                                }
+                            });
+                        }
+                    }
+                )
             }
-            console.log("User was registered successfully!");
-            res.send({ message: "User was registered successfully!" });
-          });
         }
-      );
-    } else {
-      Role.findOne({ name: "user" }, (err, role) => {
-        if (err) {
-          res.status(500).send({ message: err });
-          return;
+    );
+}
+
+exports.login = (req, res, next) => {
+    db.query(
+        `SELECT * FROM users WHERE username = ${db.escape(req.body.username)};`,
+        (err, result) => {
+            // user does not exists
+            if (err) {
+                console.log(err);
+                return res.status(400).send({
+                    msg: "User does not exist"
+                });
+            }
+
+            if (!result.length) {
+                return res.status(401).send({
+                    msg: 'Username or password is incorrect!'
+                });
+            }
+
+            // check password
+            bcrypt.compare(
+                req.body.password,
+                result[0]['password'],
+                (bErr, bResult) => {
+                    // wrong password
+                    if (bErr) {
+                        console.log(bErr);
+                        return res.status(401).send({
+                            msg: 'Username or password is incorrect!'
+                        });
+                    }
+
+                    if (bResult) {
+                        const token = jwt.sign({
+                            username: result[0].username,
+                            userID: result[0].id
+                        },
+                            'SECRETKEY', {
+                            expiresIn: '7d'
+                        }
+                        );
+
+                        db.query(
+                            `UPDATE users SET last_login = now() WHERE id = '${result[0].id}'`
+                        );
+                        return res.status(200).send({
+                            msg: 'Logged in!',
+                            token,
+                            user: result[0]
+                        });
+                    }
+                    return res.status(401).send({
+                        msg: 'Username or password is incorrect!'
+                    });
+                }
+            );
         }
-
-        user.roles = [role._id];
-        user.save(err => {
-          if (err) {
-            res.status(500).send({ message: err });
-            return;
-          }
-          console.log("User was registered successfully!");
-          res.send({ message: "User was registered successfully!" });
-        });
-      });
-    }
-  });
-};
-
-exports.signin = (req, res) => {
-  User.findOne({
-    username: req.body.username
-  })
-    .populate("roles", "-__v")
-    .exec((err, user) => {
-      if (err) {
-        res.status(500).send({ message: err });
-        return;
-      }
-
-      if (!user) {
-        return res.status(404).send({ message: "User Not found." });
-      }
-
-      let passwordIsValid = bcrypt.compareSync(
-        req.body.password,
-        user.password
-      );
-
-      if (!passwordIsValid) {
-        return res.status(401).send({
-          accessToken: null,
-          message: "Invalid Password!"
-        });
-      }
-
-      var token = jwt.sign({ id: user.id }, config.secret, {
-        expiresIn: 86400 // 24 hours
-      });
-
-      var authorities = [];
-
-      for (let i = 0; i < user.roles.length; i++) {
-        authorities.push("ROLE_" + user.roles[i].name.toUpperCase());
-      }
-      res.status(200).send({
-        id: user._id,
-        username: user.username,
-        email: user.email,
-        roles: authorities,
-        accessToken: token
-      });
-    });
+    );
 };
