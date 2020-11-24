@@ -85,7 +85,7 @@ exports.login = (req, res, next) => {
                 result[0]['password'],
                 (bErr, bResult) => {
                     // wrong password
-                    if (bErr) {
+                    if (bErr || !bResult) {
                         console.log(bErr);
                         return res.status(401).send({
                             msg: 'Username or password is incorrect!'

@@ -16,6 +16,9 @@ router.post('/signup', userMiddleware.validateRegister, authController.signup);
 router.post('/login', authController.login);
 router.post('/add/ebook', userMiddleware.isLoggedIn, usersController.addEbook);
 
+router.put("/edit/user", userMiddleware.isLoggedIn, usersController.editUser);
+router.put("/edit/ebook", userMiddleware.isLoggedIn, usersController.editEbook);
+
 router.delete("/delete/ebook", userMiddleware.isLoggedIn, usersController.deleteEbook);
 router.delete("/delete/user", userMiddleware.isLoggedIn, usersController.deleteUser);
 
