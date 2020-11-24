@@ -16,4 +16,7 @@ router.post('/signup', userMiddleware.validateRegister, authController.signup);
 router.post('/login', authController.login);
 router.post('/add/ebook', userMiddleware.isLoggedIn, usersController.addEbook);
 
+router.delete("/delete/ebook", userMiddleware.isLoggedIn, usersController.deleteEbook);
+router.delete("/delete/user", userMiddleware.isLoggedIn, usersController.deleteUser);
+
 module.exports = router;

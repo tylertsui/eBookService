@@ -14,9 +14,9 @@ exports.addEbook = (req, res, next) => {
         });
     }
     db.query(`SELECT * FROM ebooks 
-    WHERE title = LOWER('${db.escape(title)}')
-    AND author = LOWER('${db.escape(author)}')`, (err, results) => {
-        console.log(results)
+    WHERE title = LOWER(${db.escape(title)})
+    AND author = LOWER(${db.escape(author)})`, (err, results) => {
+        console.log("RESULTS: " + JSON.stringify(results))
         if (results.length) {
             return res.status(409).send({
                 msg: 'Someone already uploaded the same ebook!'
@@ -60,7 +60,7 @@ exports.getAllBooks = (req, res, next) => {
 }
 
 exports.getBooksByTitle = (req, res, next) => {
-    let title = req.params.title
+    let title = req.params.title;
     db.query(`SELECT * FROM ebooks WHERE title=${db.escape(title)}`, (err, results) => {
         if (err) {
             console.log(err);
@@ -75,7 +75,7 @@ exports.getBooksByTitle = (req, res, next) => {
 }
 
 exports.getBooksByAuthor = (req, res, next) => {
-    let author = req.params.author
+    let author = req.params.author;
     db.query(`SELECT * FROM ebooks WHERE author=${db.escape(author)}`, (err, results) => {
         if (err) {
             console.log(err);
@@ -90,7 +90,7 @@ exports.getBooksByAuthor = (req, res, next) => {
 }
 
 exports.getBooksByGenre = (req, res, next) => {
-    let genre = req.params.genre
+    let genre = req.params.genre;
     db.query(`SELECT * FROM ebooks WHERE genre=${db.escape(genre)}`, (err, results) => {
         if (err) {
             console.log(err);
@@ -105,7 +105,7 @@ exports.getBooksByGenre = (req, res, next) => {
 }
 
 exports.getBooksByYear = (req, res, next) => {
-    let year = req.params.year
+    let year = req.params.year;
     db.query(`SELECT * FROM ebooks WHERE year=${db.escape(year)}`, (err, results) => {
         if (err) {
             console.log(err);
@@ -120,7 +120,7 @@ exports.getBooksByYear = (req, res, next) => {
 }
 
 exports.getBooksByUploader = (req, res, next) => {
-    let userID = req.userData.userID
+    let userID = req.userData.userID;
     db.query(`SELECT * FROM ebooks WHERE userID=${db.escape(userID)}`, (err, results) => {
         if (err) {
             console.log(err);
@@ -130,6 +130,57 @@ exports.getBooksByUploader = (req, res, next) => {
         }
         return res.status(200).send({
             msg: results,
+        });
+    })
+}
+
+exports.deleteEbook = (req, res, next) => {
+    let title = req.body.title;
+    let author = req.body.author;
+    let userID = req.userData.userID;
+    db.query(
+        `SELECT * FROM ebooks WHERE title=${db.escape(title)}
+        AND userID=${db.escape(userID)}
+        AND author=${db.escape(author)}`, (err, result) => {
+        if (err) {
+            console.log(err);
+            return res.status(400).send({
+                msg: `eBook query failed: ${err}`
+            });
+        }
+        if (!result.length) {
+            return res.status(400).send({
+                msg: `No matching eBook uploaded by this user`
+            });
+        } else {
+            db.query(`DELETE FROM ebooks WHERE title=${db.escape(title)}
+                AND userID=${db.escape(userID)}
+                AND author=${db.escape(author)}`, (err, result) => {
+                if (err) {
+                    console.log(err);
+                    return res.status(400).send({
+                        msg: `eBook deletion failed: ${err}`
+                    });
+                }
+                return res.status(200).send({
+                    msg: `eBook: ${title} deleted successfully`
+                })
+            })
+        }
+    })
+}
+
+exports.deleteUser = (req, res, next) => {
+    let userID = req.userData.userID
+    db.query(`DELETE FROM users WHERE id=${db.escape(userID)}`, (err, results) => {
+        if (err) {
+            console.log(err);
+            return res.status(400).send({
+                msg: `User deletion failed: ${err}`
+            });
+        }
+        return res.status(200).send({
+            msg: `USER: ${req.userData.username} deleted successfully`,
         });
     })
 }
