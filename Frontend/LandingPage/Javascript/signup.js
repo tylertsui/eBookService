@@ -2,7 +2,8 @@ const getFormData = () => {
     let user = {
         email: document.getElementById("email").value, 
         username: document.getElementById("username").value, 
-        password: document.getElementById("password").value
+        password: document.getElementById("password").value,
+        password_repeat: document.getElementById("spassword").value
     }
     return user;
 }
@@ -14,12 +15,12 @@ const redirectToLanding = (msg) => {
 
 const signUp = () => {
     let user = getFormData();
-    let URL = `${BASE_URL}/api/auth/signup`;
+    let URL = `${BASE_URL}/api/signup`;
     axios.post(URL, user).then(res => {
-        console.log(res.data.message);
-        redirectToLanding(res.data.message);
+        console.log(res.msg);
+        redirectToLanding(res.msg);
     }).catch(e => {
-        console.log(e.response.data.message)
-        alert(e.response.data.message);
+        console.log(e)
+        alert(e);
     });
 }
