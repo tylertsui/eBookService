@@ -43,6 +43,29 @@ const edit_user = () => {
     })
 }
 
+const delete_account = () => {
+    token = sessionStorage.getItem("token");
+
+    axios({
+        method: 'DELETE',
+        url: `${BASE_URL}/api/delete/user`,
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }
+    }).then(response => {
+        console.log("=====SUCCESSSS======")
+        console.log(JSON.stringify(response.data))
+        window.alert(response.data.msg);
+        sessionStorage.clear();
+        window.location.replace("../../LandingPage/HTML/index.html");
+    }).catch(error => {
+        console.log("==========FAILED================")
+        console.log(error.response.data.msg)
+        window.alert(error.response.data.msg);
+    })
+}
+
 const navigate_back = () => {
     window.location.replace("../../UserPage/HTML/user.html");
 }
@@ -51,6 +74,7 @@ const page_populate = () => {
     let username = sessionStorage.getItem("username");
     let email = sessionStorage.getItem("email");
     let edit = document.getElementById("edit");
+    let delete_current = document.getElementById("user_delete");
     let nav_back = document.getElementById("nav_back");
 
     document.getElementById("username").innerHTML = `Username: ${username}`;
@@ -58,6 +82,9 @@ const page_populate = () => {
 
     edit.innerHTML = "Edit Account";
     edit.onclick = edit_user;
+
+    delete_current.innerHTML = "Delete Account";
+    delete_current.onclick = delete_account;
 
     nav_back.innerHTML = "Return";
     nav_back.onclick = navigate_back;

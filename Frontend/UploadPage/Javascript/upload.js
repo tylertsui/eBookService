@@ -101,6 +101,10 @@ let upload_function = async () => {
     
 }
 
+let navigate_user_page = () => {
+    window.location.replace("../../UserPage/HTML/user.html");
+}
+
 const uploadEBookToDB = (body) => {
     let token = sessionStorage.getItem("token");
     // const header = {
@@ -121,14 +125,12 @@ const uploadEBookToDB = (body) => {
     .then(response => {
         console.log("=====SUCCESSSS======")
         console.log(JSON.stringify(response.data))
+        window.alert(response.data.msg);
+        navigate_user_page();
     }).catch(error => {
         console.log("==========FAILED================")
         console.log(error.response.data.msg)
     })
-}
-
-let navigate_user_page = () => {
-    window.location.replace("../../UserPage/HTML/user.html");
 }
 
 let main = () => {

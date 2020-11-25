@@ -17,8 +17,8 @@ const signUp = () => {
     let user = getFormData();
     let URL = `${BASE_URL}/api/signup`;
     axios.post(URL, user).then(res => {
-        console.log(res.msg);
-        redirectToLanding(res.msg);
+        console.log(res.data.msg);
+        redirectToLanding(res.data.msg);
     }).catch(e => {
         console.log(e.response.data.msg)
         alert(e.response.data.msg);

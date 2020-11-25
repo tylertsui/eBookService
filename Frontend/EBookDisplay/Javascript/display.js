@@ -6,6 +6,34 @@ const navigate_edit = () => {
     window.location.replace("../../EBookEdit/HTML/ebedit.html");
 }
 
+const delete_current = () => {
+    let token = sessionStorage.getItem("token");
+    let body = {
+        author: sessionStorage.getItem("author"),
+        title: sessionStorage.getItem("title")
+    }
+    axios({
+        method: 'DELETE',
+        url: `${BASE_URL}/api/delete/ebook`,
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        data: body
+    })
+    // axios.post("http://localhost:8080/api/eBookAdd", body, header)
+    .then(response => {
+        console.log("=====SUCCESSSS======")
+        console.log(JSON.stringify(response.data))
+        window.alert(response.data.msg);
+        navigate_user();
+    }).catch(error => {
+        console.log("==========FAILED================")
+        console.log(error.response.data.msg)
+        window.alert(error.response.data.msg);
+    })
+}
+
 const page_populate = () => {
     let ebook = {
         title: sessionStorage.getItem("title"),
@@ -16,6 +44,7 @@ const page_populate = () => {
     }
     let navigate_return = document.getElementById("nav_back");
     let edit_ebook = document.getElementById("edit");
+    let delete_ebook = document.getElementById("delete_ebook");
 
     document.getElementById("title").innerHTML = `Title: ${ebook.title}`;
     document.getElementById("author").innerHTML = `Author: ${ebook.author}`;
@@ -25,6 +54,9 @@ const page_populate = () => {
 
     navigate_return.onclick = navigate_user;
     navigate_return.innerHTML = "Return";
+
+    delete_ebook.innerHTML = "Delete EBook";
+    delete_ebook.onclick = delete_current;
 
     edit_ebook.onclick = navigate_edit;
     edit_ebook.innerHTML = "Edit EBook";
