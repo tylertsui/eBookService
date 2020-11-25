@@ -35,7 +35,7 @@ const login = () => {
         setSessionStorage(res.data);
         redirectToHome();
     }).catch(e => {
-        console.log(e)
-        alert(e);
+        console.log(e.response.data.msg)
+        alert(e.response.data.msg);
     });
 }
