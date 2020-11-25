@@ -1,61 +1,73 @@
-const email_nav = () => {
-    window.location.replace("./email.html");
-}
+const edit_user = () => {
+    let token = sessionStorage.getItem("token");
 
-const username_nav = () => {
-    window.location.replace("./username.html");
-}
+    let body = {
+        oldPassword: document.getElementById("password").value,
+        newUsername: null,
+        newEmail: null,
+        newPassword: null
+    }
 
-const password_nav = () => {
-    window.location.replace("./password.html");
-}
+    if (document.getElementById("nusername").value) {
+        body.newUsername = document.getElementById("nusername").value.toLowerCase();
+    }
 
-const page_navigation = () => {
-    let password = document.getElementById("password_change");
-    let username = document.getElementById("username_change");
-    let email = document.getElementById("email_change");
+    if (document.getElementById("nemail").value) {
+        body.newEmail = document.getElementById("nemail").value.toLowerCase();
+    }
 
-    password.innerHTML = "Change Password";
-    password.onclick = password_nav;
-    username.innerHTML = "Change Username";
-    username.onclick = username_nav;
-    email.innerHTML = "Change Email";
-    email.onclick = email_nav;
-}
+    if (document.getElementById("npassword").value) {
+        body.newPassword = document.getElementById("npassword").value.toLowerCase();
+    }
 
-const page_populate = () => {
-    let token = sessionStorage.getItem("username");
-    let id = sessionStorage.getItem("userID");
-    let user;
     axios({
-        method: 'GET',
-        url: "http://localhost:8080/api/users",
+        method: 'PUT',
+        url: `${BASE_URL}/api/edit/user`,
         headers: {
             'Content-Type': 'application/json',
-            'x-access-token': token
-        }
-    }).then(response => {
+            'Authorization': `Bearer ${token}`
+        },
+        data: body
+    })
+    // axios.post("http://localhost:8080/api/eBookAdd", body, header)
+    .then(response => {
+        console.log("=====SUCCESSSS======")
         console.log(JSON.stringify(response.data))
-        for(let i = 0; i < response.data.users.length; i++) {
-            if (response.data.users[i]._id == id) {
-                user = response.data.users[i];
-                break;
-            }
-        }
-        let user_div = document.getElementById("account_info_area");
-        let user_name = document.createElement("p");
-        let email = document.createElement("p");
-        user_name.innerHTML = `Username: ${user.username}`;
-        email.innerHTML = `Email: ${user.email}`;
-        user_div.appendChild(user_name);
-        user_div.appendChild(email);
+        window.alert(`${response.data.msg}: Please Relog Back In!`);
+        sessionStorage.clear();
+        window.location.replace("../../LandingPage/HTML/index.html");
     }).catch(error => {
-        console.log(error)
+        console.log("==========FAILED================")
+        console.log(error.response.data.msg)
+        window.alert(error.response.data.msg);
     })
 }
 
+const navigate_back = () => {
+    window.location.replace("../../UserPage/HTML/user.html");
+}
+
+const page_populate = () => {
+    let username = sessionStorage.getItem("username");
+    let email = sessionStorage.getItem("email");
+    let edit = document.getElementById("edit");
+    let nav_back = document.getElementById("nav_back");
+
+    document.getElementById("username").innerHTML = `Username: ${username}`;
+    document.getElementById("email").innerHTML = `Email: ${email}`;
+
+    edit.innerHTML = "Edit Account";
+    edit.onclick = edit_user;
+
+    nav_back.innerHTML = "Return";
+    nav_back.onclick = navigate_back;
+}
+
 const main = () => {
-    page_navigation();
+    let user = getUser();
+    if (checkUserForNull(user)) {
+        redirectToHome();
+    }
     page_populate();
 }
 

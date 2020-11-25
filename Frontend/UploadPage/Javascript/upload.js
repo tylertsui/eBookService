@@ -23,7 +23,7 @@ let upload_file = async (data) => {
 
 let upload_title = (data) => {
     try {
-        let title = document.getElementById("title").value;
+        let title = document.getElementById("title").value.toLowerCase();
         if (title === "") {
             throw "Empty";
         }
@@ -35,7 +35,7 @@ let upload_title = (data) => {
 
 let upload_author = (data) => {
     try {
-        let author = document.getElementById("author").value;
+        let author = document.getElementById("author").value.toLowerCase();
         if (author === "") {
             throw "Empty";
         }
@@ -59,7 +59,7 @@ let upload_year = (data) => {
 
 let upload_genre = (data) => {
     try {
-        let genre = document.getElementById("genre").value;
+        let genre = document.getElementById("genre").value.toLowerCase();
         if (genre === "") {
             throw "Empty";
         }
