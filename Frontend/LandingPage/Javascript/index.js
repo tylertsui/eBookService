@@ -15,7 +15,7 @@ const setSessionStorage = (user) => {
     sessionStorage.setItem("email", user.user.email);
     sessionStorage.setItem("userID", user.user.id);
     sessionStorage.setItem("token", user.token);
-    sessionStorage.setItem("password", user.password);
+    sessionStorage.setItem("password", user.user.password);
 }
 
 const login = () => {

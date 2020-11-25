@@ -24,8 +24,8 @@ const page_navigation = () => {
 }
 
 const page_populate = () => {
-    let token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVmYjliYjA3MGI1NGQ1Mzc1NDhkN2NjOCIsImlhdCI6MTYwNjA4NTExMCwiZXhwIjoxNjA2MTcxNTEwfQ.rGjR4Qh6I9UWe26w_dePMXGHr5tD7jF_kQAmolSTSLY';
-    let id = '5fb9b7510b54d537548d7cc3';
+    let token = sessionStorage.getItem("username");
+    let id = sessionStorage.getItem("userID");
     let user;
     axios({
         method: 'GET',

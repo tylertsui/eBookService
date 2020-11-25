@@ -51,7 +51,7 @@ let upload_year = (data) => {
         if (year === null) {
             throw "Empty";
         }
-        data["publicationYear"] = year;
+        data["year"] = year;
     } catch(err) {
         document.getElementById("error").innerHTML = "Cannot upload without a publication year!";
     }
@@ -85,10 +85,9 @@ let upload_function = async () => {
     let data = {
         title: "", 
         author: "", 
-        publicationYear: null, 
+        year: null, 
         content: "",
-        genre: "",
-        uploader: "test1"};
+        genre: ""};
     upload_title(data);
     upload_author(data);
     upload_year(data);
@@ -102,24 +101,19 @@ let upload_function = async () => {
     
 }
 
-const testing = () => {
-    axios.get("http://localhost:8080")
-    .then(res => console.log(JSON.stringify(res.data)))
-    .catch(e => console.log("FIRST FAILED"))
-}
-
 const uploadEBookToDB = (body) => {
-    let token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVmYjliYjA3MGI1NGQ1Mzc1NDhkN2NjOCIsImlhdCI6MTYwNjA4NTExMCwiZXhwIjoxNjA2MTcxNTEwfQ.rGjR4Qh6I9UWe26w_dePMXGHr5tD7jF_kQAmolSTSLY'
+    let token = sessionStorage.getItem("token");
     // const header = {
     //     'Content-Type': 'application/json',
     //     'x-access-token': token
     // }
+    console.log(body);
     axios({
         method: 'POST',
-        url: "http://localhost:8080/api/eBookAdd",
+        url: `${BASE_URL}/api/add/ebook`,
         headers: {
             'Content-Type': 'application/json',
-            'x-access-token': token
+            'Authorization': `Bearer ${token}`
         },
         data: body
     })
@@ -129,14 +123,28 @@ const uploadEBookToDB = (body) => {
         console.log(JSON.stringify(response.data))
     }).catch(error => {
         console.log("==========FAILED================")
-        console.log(error)
+        console.log(error.response.data.msg)
     })
 }
 
+let navigate_user_page = () => {
+    window.location.replace("../../UserPage/HTML/user.html");
+}
+
 let main = () => {
+    let user = getUser();
     let button = document.getElementById("submit");
+    let return_button = document.getElementById("return");
+
+    if (checkUserForNull(user)) {
+        redirectToHome();
+    }
+
     button.innerHTML = "Submit";
     button.onclick = upload_function;
+
+    return_button.innerHTML = "Return to User Page";
+    return_button.onclick = navigate_user_page;
 }
 
 main();

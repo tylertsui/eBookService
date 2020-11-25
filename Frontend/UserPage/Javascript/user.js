@@ -1,14 +1,3 @@
-const getUser = () => {
-    let user = {
-        userID: sessionStorage.getItem("userID"),
-        username: sessionStorage.getItem("username"),
-        email: sessionStorage.getItem("email"),
-        token: sessionStorage.getItem("token"),
-        password: sessionStorage.getItem("password")
-    }
-    return user;
-}
-
 const toUpload = () => {
     window.location.replace("../../UploadPage/HTML/upload.html");
 }
@@ -17,25 +6,139 @@ const toUser = () => {
     window.location.replace("../../AccountSetting/HTML/account.html");
 }
 
-const redirectToHome = () => {
-    window.location.replace("../../LandingPage/HTML/index.html");
+const display_results = (data) => {
+    document.getElementById("search_results").innerHTML = data[0];
+}
+
+const search_by_title = (title) => {
+    let token = sessionStorage.getItem("token");
+    console.log(title);
+    axios({
+        method: 'GET',
+        url: `${BASE_URL}/api/ebooks/title/${title}`,
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+    })
+    .then(response => {
+        console.log("=====SUCCESSSS======")
+        console.log(JSON.stringify(response.data))
+        display_results(response.data.msg);
+    }).catch(error => {
+        console.log("==========FAILED================")
+        console.log(error.response.data.msg)
+    })
+}
+
+const search_by_genre = (genre) => {
+    let token = sessionStorage.getItem("token");
+    console.log(genre);
+    axios({
+        method: 'GET',
+        url: `${BASE_URL}/api/ebooks/genre/${genre}`,
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+    })
+    .then(response => {
+        console.log("=====SUCCESSSS======")
+        console.log(JSON.stringify(response.data))
+        display_results(response.data.msg);
+    }).catch(error => {
+        console.log("==========FAILED================")
+        console.log(error.response.data.msg)
+    })
+}
+
+const search_by_author = (author) => {
+    let token = sessionStorage.getItem("token");
+    console.log(author);
+    axios({
+        method: 'GET',
+        url: `${BASE_URL}/api/ebooks/author/${author}`,
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+    })
+    .then(response => {
+        console.log("=====SUCCESSSS======")
+        console.log(JSON.stringify(response.data))
+        display_results(response.data.msg);
+    }).catch(error => {
+        console.log("==========FAILED================")
+        console.log(error.response.data.msg)
+    })
+}
+
+const search_by_year = (year) => {
+    let token = sessionStorage.getItem("token");
+    console.log(year);
+    axios({
+        method: 'GET',
+        url: `${BASE_URL}/api/ebooks/year/${year}`,
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+    })
+    .then(response => {
+        console.log("=====SUCCESSSS======")
+        console.log(JSON.stringify(response.data))
+        display_results(response.data.msg);
+    }).catch(error => {
+        console.log("==========FAILED================")
+        console.log(error.response.data.msg)
+    })
+}
+
+const search_by_user = () => {
+    let token = sessionStorage.getItem("token");
+    axios({
+        method: 'GET',
+        url: `${BASE_URL}/api/ebooks/uploader`,
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+    })
+    .then(response => {
+        console.log("=====SUCCESSSS======")
+        console.log(JSON.stringify(response.data))
+        display_results(response.data.msg);
+    }).catch(error => {
+        console.log("==========FAILED================")
+        console.log(error.response.data.msg)
+    })
+}
+
+const search_function = () => {
+    let search = document.getElementById("eb_search").value;
+    let search_option = document.getElementById("title").value;
+
+    if (search_option == "title") {
+        search_by_title(search);
+    } else if (search_option == "genre") {
+        search_by_genre(search);
+    } else if (search_option == "author") {
+        search_by_author(search);
+    } else if (search_option == "year") {
+        search_by_year(search);
+    }
 }
 
 const pageNavigation = () => {
     let upload = document.getElementById("eb_upload");
     let user = document.getElementById("user_info_settings");
+    let submit = document.getElementById("eb_submit");
+    let user_search = document.getElementById("eb_user_search");
+
     upload.onclick = toUpload;
     user.onclick = toUser;
-}
-
-const checkUserForNull = (user) => {
-    let isNull = false;
-     Object.keys(user).forEach(key => {
-       if (user[key] == null) {
-        isNull = true;
-       }
-     });
-     return isNull;
+    submit.onclick = search_function;
+    user_search.onclick = search_by_user;
 }
 
 const signOut = () => {
