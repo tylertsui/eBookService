@@ -119,7 +119,40 @@ exports.getBooksByYear = (req, res, next) => {
     })
 }
 
-exports.getBooksByUploader = (req, res, next) => {
+exports.getBooksByUser = (req, res, next) => {
+    let username = req.params.uploader;
+    db.query(`SELECT * FROM users WHERE username=${db.escape(username)}`, (err, results) => {
+        if (err) {
+            console.log(err);
+            return res.status(400).send({
+                msg: `User query failed: ${err}`
+            });
+        }
+        if (!results.length) {
+            return res.status(400).send({
+                msg: `${username} is not a valid user`
+            });
+        }
+        db.query(`SELECT * FROM ebooks WHERE userID=${db.escape(results[0].id)}`, (err, results) => {
+            if (err) {
+                console.log(err);
+                return res.status(400).send({
+                    msg: `eBook query failed: ${err}`
+                });
+            }
+            if (!results.length) {
+                return res.status(400).send({
+                    msg: `${username} have not uploaded any books`
+                });
+            }
+            return res.status(200).send({
+                msg: results,
+            });
+        })
+    })
+}
+
+exports.getBooksYouUploaded = (req, res, next) => {
     let userID = req.userData.userID;
     db.query(`SELECT * FROM ebooks WHERE userID=${db.escape(userID)}`, (err, results) => {
         if (err) {

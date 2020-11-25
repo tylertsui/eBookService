@@ -4,7 +4,7 @@ const getUser = () => {
         username: sessionStorage.getItem("username"),
         email: sessionStorage.getItem("email"),
         token: sessionStorage.getItem("token"),
-        role: sessionStorage.getItem("role")
+        password: sessionStorage.getItem("password")
     }
     return user;
 }

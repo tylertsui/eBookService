@@ -11,15 +11,6 @@ const redirectToHome = () => {
 }
 
 const setSessionStorage = (user) => {
-    // let role = "user";
-    // if (user.roles.length > 1) {
-    //     role = "admin"
-    // }
-    // sessionStorage.setItem("username", user.username);
-    // sessionStorage.setItem("email", user.email);
-    // sessionStorage.setItem("userID", user.id);
-    // sessionStorage.setItem("token", user.accessToken);
-    // sessionStorage.setItem("role", role);
     sessionStorage.setItem("username", user.user.username);
     sessionStorage.setItem("email", user.user.email);
     sessionStorage.setItem("userID", user.user.id);
