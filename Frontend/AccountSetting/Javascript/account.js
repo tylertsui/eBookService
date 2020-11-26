@@ -67,7 +67,7 @@ const delete_account = () => {
 }
 
 const navigate_back = () => {
-    window.location.replace("../../UserPage/HTML/user.html");
+    window.location.replace("../../UserPage/HTML/index.html");
 }
 
 const page_populate = () => {

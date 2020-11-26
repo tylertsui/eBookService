@@ -1,5 +1,5 @@
 const navigate_user = () => {
-    window.location.replace("../../Userpage/HTML/user.html");
+    window.location.replace("../../Userpage/HTML/index.html");
 }
 
 const navigate_edit = () => {

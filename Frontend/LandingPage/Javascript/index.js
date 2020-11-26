@@ -7,7 +7,7 @@ const getFormData = () => {
 }
 
 const redirectToHome = () => {
-    window.location.replace("../../UserPage/HTML/user.html");
+    window.location.replace("../../UserPage/HTML/index.html");
 }
 
 const setSessionStorage = (user) => {
